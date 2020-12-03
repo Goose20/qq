@@ -4,7 +4,7 @@ library(datasets)
 ui <- fluidPage("Shiny Application",
               tabPanel("Analysis",
                        fluidPage(
-                           titlepanel("The relationship between variables and miles per gallon"),
+                           titlePanel("The relationship between variables and miles per gallon"),
                            sidebarLayout(
                                sidebarPanel(
                                    selectInput("variable", "Variable:",
@@ -81,17 +81,16 @@ ui <- fluidPage("Shiny Application",
     
 
 data <- mtcars
-data$am <- factor(data$am, lables = c("Automatic","Manual"))
 
 server <- function(input, output) {
     formulaText <- reactive(paste("mpg~", input$variable))
-    formalaTextPoint <- reactive(paste("mpg~","as.integer(",input$variable,")"))
+    formulaTextPoint <- reactive(paste("mpg~","as.integer(",input$variable,")"))
     
     fit<- reactive(lm(as.formula(formulaTextPoint()), dat = data))
     
     output$caption <- renderText(formulaText())
     output$mpgBoxPlot <- renderPlot(boxplot(as.formula(formulaText()), 
-                data = mpgData,
+                dat = data,
                 outline = input$outliers))
     output$fit <- renderPrint(summary(fit()))
     output$plot <- renderPlot(with(data, {plot(as.formula((formalaTextPoint())),
